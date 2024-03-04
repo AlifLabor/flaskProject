@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro_funcionario</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto;
+            width: 300px; /* Ajuste a largura conforme necessário */
+            height: auto;
+            margin-bottom: 20px; /* Adiciona espaço entre a logo e o container */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="date"] {
+            width: calc(100% - 20px); /* Reduzindo a largura para dar espaço para a seta do calendário */
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #214E71;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2EB7B2;
+        }
+
+        .date-time-container label {
+            width: 48%; /* Distribui igualmente o espaço para as etiquetas */
+        }
+
+        .divider {
+            margin: 0;
+            padding: 0 30px;
+            font-size: 20px;
+            background-color: #fff;
+            display: inline-block;
+            position: relative;
+            top: -12px;
+        }
+
+        .date-time-container input {
+            width: calc(50% - 5px); /* Distribui igualmente o espaço para as entradas, com uma pequena margem entre elas */
+        }
+
+        /* Botão de novo funcionário */
+        .new-employee-button {
+            position: absolute;
+            top: 60px;
+            right: 350px;
+            left: 1050px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #214E71;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .new-employee-button:hover {
+            background-color: #2EB7B2;
+        }
+
+        /* Botão de novo funcionário */
+        .new-employee-button-lote {
+            position: absolute;
+            top: 120px;
+            right: 350px;
+            left: 1050px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #214E71;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .new-employee-button-lote:hover {
+            background-color: #2EB7B2;
+        }
+
+        /* Ajuste de espaçamento para o botão */
+        .cnpj-container button {
+            margin-left: 10px;
+            background-color: #214E71;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .cnpj-container button:hover {
+            background-color: #2EB7B2;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none; /* Inicia oculto */
+            margin-top: 1px;
+        }
+        /* Repetindo os estilos anteriores */
+        .form-row {
+            display: flex;
+            align-items: flex-start; /* Alinha os contêineres de entrada no topo */
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            flex: 1; /* Cada contêiner ocupa a mesma largura */
+            margin-right: 10px; /* Espaçamento entre os contêineres */
+        }
+
+        .input-container label {
+            display: block; /* Coloca o rótulo acima do input */
+            margin-bottom: 5px; /* Espaçamento entre o rótulo e o input */
+        }
+
+        /* Estilo para os campos de entrada com 80% de largura */
+        .input-80 {
+            width: 100%; /* Ocupa todo o espaço disponível no contêiner */
+        }
+
+    </style>
+</head>
+<body>
+    <img src="/static/logo-labormesp.png" alt="Logo" class="logo" width="300">
+    <div class="container">
+        <h1>Agendamento de Exames</h1>
+        <button class="new-employee-button" onclick="location.href='/cadastro_funcionario'">Cadastrar Funcionário</button>
+        <button class="new-employee-button-lote" onclick="location.href='/cadastro_funcionario'">Cadastrar em lote</button>
+        <form action="/submit" method="POST">
+            <div class="divider">
+                <p>Dados do Agendamento</p>
+            </div>
+
+            <label for="tipo_exame">Tipo de Exame:</label>
+            <select id="tipo_exame" name="tipo_exame" required>
+                <option value="Selecione_exame">Selecione um tipo de exame</option>
+                <option value="Admissional">Admissional</option>
+                <option value="Demissional">Demissional</option>
+                <option value="Periódico">Periódicos</option>
+                <option value="Retorno ao Trabalho">Retorno ao Trabalho</option>
+                <option value="Mudança de Função">Mudança de Função</option>
+            </select>
+
+            <div class="form-row">
+                <div class="input-container">
+                    <label for="empresa">Empresa:</label>
+                    <input type="text" id="empresa" name="empresa" required>
+                </div>
+                <div class="input-container">
+                    <label for="cnpj">CNPJ:</label>
+                    <input type="text" id="cnpj" name="cnpj" required>
+                    <div id="cnpj-error-message" style="display: none; color: red;"></div>
+                </div>
+            </div>
+
+            <!-- Nome e CPF -->
+            <div class="form-row">
+                <div class="input-container">
+                    <label for="nome_funcionario">Nome do Funcionário:</label>
+                    <input type="text" id="nome_funcionario" class="input-80" required>
+                </div>
+                <div class="input-container">
+                    <label for="cpf_funcionario">CPF do Funcionário:</label>
+                    <input type="text" id="cpf_funcionario" name="cpf_funcionario" class="input-80" required>
+                    <p class="error-message" id="cpf-error-message"></p>
+                </div>
+            </div>
+            <p class="error-message" id="cpf-error-message"></p>
+
+            <!-- Email -->
+            <label for="email_contato">Email para Contato:</label>
+            <input type="text" id="email_contato" name="email_contato" required>
+
+            <!-- Subtitulo -->
+            <div class="divider">
+                <p>Detalhes do Atendimento</p>
+            </div>
+            <!-- Unidade -->
+            <label for="unidade_atendimento">Unidade de Atendimento:</label>
+            <select id="unidade_atendimento" name="unidade_atendimento" required>
+                <option value="Selecione uma unidade">Selecione uma unidade de atendimento</option>
+                <option value="Alphaville">Alphaville</option>
+                <option value="Ipiranga">Ipiranga</option>
+                <option value="Jabaquara">Jabaquara</option>
+                <option value="Teste">Teste</option>
+            </select>
+            <!-- Data e hora -->
+            <div class="form-row">
+                <div class="input-container">
+                    <label for="data_atendimento">Data do Atendimento:</label>
+                    <select name="data_atendimento" id="data_atendimento" class="input-80" required>
+                        <!-- As opções de data do atendimento serão adicionadas dinamicamente aqui -->
+                    </select>
+                </div>
+                <div class="input-container">
+                    <label for="horario_atendimento">Horário do Atendimento:</label>
+                    <select name="horario_atendimento" id="horario_atendimento" class="input-80" required>
+                        <!-- As opções de horário do atendimento serão adicionadas dinamicamente aqui -->
+                    </select>
+                </div>
+            </div>
+            <input type="submit" value="Agendar">
+        </form>
+    </div>
+<script>
+    //PEGANDO UNIDADE DE ATENDIMENTO / DATA ATENDIMENTO
+    document.addEventListener("DOMContentLoaded", function() {
+        // Função para enviar solicitação AJAX ao selecionar uma unidade de atendimento
+        function consultarAgenda(codigoAgenda) {
+            console.log("Consultando agenda para o código de agenda:", codigoAgenda);
+            fetch('/consultar_agenda', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ codigoAgenda: codigoAgenda })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na solicitação AJAX');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Dados recebidos:", data);
+
+                // Selecionar o campo data_atendimento
+                let selectDataAtendimento = document.getElementById('data_atendimento');
+
+                // Limpar as opções atuais
+                selectDataAtendimento.innerHTML = '';
+
+                // Adicionar a opção "Selecione um setor" como o primeiro item
+                let optionSelecionar = document.createElement('option');
+                optionSelecionar.value = ''; // Ou outro valor que faça sentido para você
+                optionSelecionar.text = 'Selecione uma data';
+                selectDataAtendimento.appendChild(optionSelecionar);
+
+                // Adicionar as novas opções com base nos dados recebidos
+                data.choices.forEach(choice => {
+                    let option = document.createElement('option');
+                    option.value = choice;
+                    option.text = choice;
+                    selectDataAtendimento.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao consultar a agenda. Por favor, verifique o console para mais detalhes.');
+            });
+        }
+
+
+    // PEGANDO COD DA AGENDA
+    document.getElementById('unidade_atendimento').addEventListener('change', function() {
+        console.log("Unidade de atendimento selecionada:", this.value); // Verificar se o evento de mudança está sendo acionado
+        // Obtenha o valor selecionado da unidade de atendimento
+        let unidadeAtendimento = this.value;
+
+        // Mapeie as unidades de atendimento para os códigos de agenda correspondentes
+        const codigosAgenda = {
+            'Selecione uma agenda': '273133',
+            'Jabaquara': '38532',
+            'Alphaville': '16145',
+            'Ipiranga': '4225',
+            'Teste': '273133'
+        };
+
+        // Consulte a agenda correspondente à unidade de atendimento selecionada
+        if (unidadeAtendimento in codigosAgenda) {
+            let codigoAgenda = codigosAgenda[unidadeAtendimento];
+            console.log("Código de agenda:", codigoAgenda); // Verificar o código de agenda antes de chamar a função
+            consultarAgenda(codigoAgenda);
+        }
+    });
+
+
+    //PEGANDO HORA DE ATENTIMENTO
+    document.getElementById('data_atendimento').addEventListener('change', function() {
+    let selectedDate = this.value; // Captura a data selecionada pelo usuário
+
+    console.log("Data selecionada:", selectedDate); // Verifica se a data está sendo capturada corretamente
+
+    // Envia a data selecionada para o servidor via AJAX
+    fetch('/horarios_disponiveis', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ selectedDate: selectedDate })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao buscar os horários disponíveis');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Horários disponíveis:", data);
+
+        // Limpar as opções atuais do campo de seleção de horários
+        let selectHorario = document.getElementById('horario_atendimento');
+        selectHorario.innerHTML = '';
+
+        // Adicionar a opção "Selecione um cargo" como o primeiro item
+        let optionSelecionar = document.createElement('option');
+        optionSelecionar.value = ''; // Ou outro valor que faça sentido para você
+        optionSelecionar.text = 'Selecione um horario';
+        selectHorario.appendChild(optionSelecionar);
+
+        // Adicionar as novas opções com base nos horários disponíveis
+        data.horarios_disponiveis.forEach(horario => {
+            let option = document.createElement('option');
+            option.value = horario;
+            option.text = horario;
+            selectHorario.appendChild(option);
+        });
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao buscar os horários disponíveis. Por favor, tente novamente mais tarde.');
+    });
+});
+
+
+    //VALIDANDO CPF
+        function validarCPF(cpf) {
+            // Expressão regular para validar o formato do CPF
+            let regex = /^[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}$/;
+
+            // Testar se o CPF corresponde ao padrão da expressão regular
+            if (!regex.test(cpf)) {
+                return false; // CPF inválido
+            }
+
+            // Algoritmo de validação de CPF
+            let cpfLimpo = cpf.replace(/[^\d]+/g, ''); // Remover pontos e traço do CPF
+            let soma = 0;
+            let resto;
+
+            // Verificar se todos os dígitos são iguais
+            if (cpfLimpo === "00000000000" || cpfLimpo === "11111111111" || cpfLimpo === "22222222222" ||
+                cpfLimpo === "33333333333" || cpfLimpo === "44444444444" || cpfLimpo === "55555555555" ||
+                cpfLimpo === "66666666666" || cpfLimpo === "77777777777" || cpfLimpo === "88888888888" ||
+                cpfLimpo === "99999999999") {
+                return false; // CPF inválido
+            }
+
+            for (let i = 1; i <= 9; i++) {
+                soma += parseInt(cpfLimpo.substring(i - 1, i)) * (11 - i);
+            }
+
+            resto = (soma * 10) % 11;
+
+            if ((resto === 10) || (resto === 11)) {
+                resto = 0;
+            }
+
+            if (resto !== parseInt(cpfLimpo.substring(9, 10))) {
+                return false; // CPF inválido
+            }
+
+            soma = 0;
+
+            for (let i = 1; i <= 10; i++) {
+                soma += parseInt(cpfLimpo.substring(i - 1, i)) * (12 - i);
+            }
+
+            resto = (soma * 10) % 11;
+
+            if ((resto === 10) || (resto === 11)) {
+                resto = 0;
+            }
+
+            if (resto !== parseInt(cpfLimpo.substring(10, 11))) {
+                return false; // CPF inválido
+            }
+
+            return true; // CPF válido
+        }
+
+        // Adicionar um evento de escuta ao campo de CPF para validar após o término da digitação
+    document.getElementById('cpf_funcionario').addEventListener('blur', function() {
+    let cpf = this.value.trim();
+    let errorMessage = document.getElementById('cpf-error-message');
+    if (errorMessage) { // Verifica se o elemento errorMessage existe
+        if (cpf !== '') {
+            if (validarCPF(cpf)) {
+                console.log('CPF válido');
+                errorMessage.textContent = ''; // Limpa o texto de erro, se houver
+                errorMessage.style.display = 'none'; // Oculta a mensagem de erro
+            } else {
+                console.log('CPF inválido');
+                errorMessage.textContent = 'CPF inválido'; // Define o texto de erro
+                errorMessage.style.display = 'block'; // Exibe a mensagem de erro
+            }
+        } else {
+            errorMessage.textContent = ''; // Limpa o texto de erro, se houver
+            errorMessage.style.display = 'none'; // Oculta a mensagem de erro se o campo estiver vazio
+        }
+    } else {
+        console.error('Elemento errorMessage não encontrado.');
+    }
+});
+
+
+        //VALIDANDO CNPJ
+    function validarCNPJ(cnpj) {
+        // Remover caracteres não numéricos
+        cnpj = cnpj.replace(/[^\d]+/g, '');
+
+        // Verificar se o CNPJ possui 14 dígitos
+        if (cnpj.length !== 14)
+            return false;
+
+        // Calcular o primeiro dígito verificador
+        let soma = 0;
+        let peso = 5;
+        for (let i = 0; i < 12; i++) {
+            soma += parseInt(cnpj.charAt(i)) * peso;
+            peso = (peso === 2) ? 9 : peso - 1;
+        }
+        let digito1 = (11 - (soma % 11)) % 11;
+
+        // Verificar o primeiro dígito verificador
+        if (parseInt(cnpj.charAt(12)) !== digito1)
+            return false;
+
+        // Calcular o segundo dígito verificador
+        soma = 0;
+        peso = 6;
+        for (let i = 0; i < 13; i++) {
+            soma += parseInt(cnpj.charAt(i)) * peso;
+            peso = (peso === 2) ? 9 : peso - 1;
+        }
+        let digito2 = (11 - (soma % 11)) % 11;
+
+        // Verificar o segundo dígito verificador
+        if (parseInt(cnpj.charAt(13)) !== digito2)
+            return false;
+
+        // CNPJ válido
+        return true;
+    }
+
+        // Adicionar um evento de escuta ao campo de CNPJ para validar após o término da digitação
+        document.getElementById('cnpj').addEventListener('blur', function() {
+            let cnpj = this.value.trim();
+            let errorMessage = document.getElementById('cnpj-error-message');
+            if (errorMessage) { // Verifica se o elemento errorMessage existe
+                if (cnpj !== '') {
+                    if (validarCNPJ(cnpj)) {
+                        console.log('CNPJ válido');
+                        errorMessage.textContent = ''; // Limpa o texto de erro, se houver
+                        errorMessage.style.display = 'none'; // Oculta a mensagem de erro
+                    } else {
+                        console.log('CNPJ inválido');
+                        errorMessage.textContent = 'CNPJ inválido'; // Define o texto de erro
+                        errorMessage.style.display = 'block'; // Exibe a mensagem de erro
+                    }
+                } else {
+                    errorMessage.textContent = ''; // Limpa o texto de erro, se houver
+                    errorMessage.style.display = 'none'; // Oculta a mensagem de erro se o campo estiver vazio
+                }
+            } else {
+                console.error('Elemento errorMessage não encontrado.');
+            }
+        });
+});
+</script>
+</body>
+</html>
